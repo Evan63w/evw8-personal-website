@@ -277,3 +277,102 @@ body {
         font-size: 1.25rem;
     }
 }
+
+/* Card styling */
+.resume-card {
+    background-color: #1e1e1e;
+    /* Dark card background */
+    color: #ffffff;
+    /* White text */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* Header styling */
+.resume-title {
+    color: #ffffff;
+    /* White header */
+    margin-bottom: 10px;
+}
+
+/* Paragraph text inside card */
+.resume-text {
+    color: #ffffff;
+    /* White text */
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+/* Download button */
+.download-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1db954;
+    /* Spotify green or your brand color */
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.download-button:hover {
+    background-color: #17a44c;
+}
+
+.dish-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+img.img-dish {
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.random-cell {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+}
+
+.book-list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.pokemon-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.img-pokemon {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    /* ensures the image fits nicely */
+    border-radius: 12px;
+    /* optional: rounded corners */
+    transition: transform 0.2s ease;
+}
+
+.img-pokemon:hover {
+    transform: scale(1.05);
+    /* subtle hover effect */
+}
+
+.img-item {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 40px;
+    height: 40px;
+}

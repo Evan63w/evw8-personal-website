@@ -1,6 +1,8 @@
 const { useState } = React;
 
+//====================
 // About Me Page Component
+//====================
 const AboutMe = () => {
     return (
         <div className="page-content">
@@ -31,7 +33,9 @@ const AboutMe = () => {
     );
 };
 
+//====================
 // Upcoming Project Page Component
+//====================
 const UpcomingProject = () => {
     return (
         <div className="page-content">
@@ -71,7 +75,87 @@ const UpcomingProject = () => {
     );
 };
 
+//====================
+// Resume Page Component
+//====================
+const Resume = () => {
+    const resumeUrl = "https://drive.google.com/uc?export=download&id=1botocWra60YxQvDDklT75ayXgrf5CntY";
+
+    return (
+        <div className="page-content">
+            <div className="content-wrapper">
+                <h1 className="page-title resume-title">Resume</h1>
+                <div className="card resume-card">
+                    <p className="resume-text">
+                        You can download my latest resume here:
+                    </p>
+                    <a
+                        href={resumeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="download-button"
+                    >
+                        Download Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+//====================
+// Random Page Component
+//====================
+const Random = () => {
+    return (
+        <div className="page-content">
+            <div className="content-wrapper">
+                <h1 className="page-title">Random</h1>
+
+                {/* Books Cell */}
+                <div className="random-cell">
+                    <h2>Books I've Read Lately</h2>
+                    <ul className="book-list">
+                        <li>"Rose Code" -  Kate Quinn</li>
+                        <li>"The Pelican Brief" - John Grisham</li>
+                        <li>"English Assassin" - Daniel Silva</li>
+                        <li>"On the Hippie Trail" - Rick Steves</li>
+                        <li>"A Court of Thorns and Roses" - Sarah J Maas</li>
+                    </ul>
+                </div>
+
+                {/* Pokémon Event Cell */}
+                {/* Pokémon Event Cell */}
+                <div className="random-cell">
+                    <h2>2026 Pokémon VGC Seattle Regional Team</h2>
+                    <p>I am looking forward to competing in this event!</p>
+                    <div className="pokemon-images">
+                        <img src="727-0.png" alt="Pokemon 1" className="img-pokemon" />
+                        <img src="812-0.png" alt="Pokemon 2" className="img-pokemon" />
+                        <img src="892-1.png" alt="Pokemon 3" className="img-pokemon" />
+                        <img src="987-0.png" alt="Pokemon 4" className="img-pokemon" />
+                        <img src="250px-1021Raging_Bolt.png" alt="Pokemon 5" className="img-pokemon" />
+                        <img src="600px-1017Ogerpon-Hearthflame_Mask.png" alt="Pokemon 6" className="img-pokemon" />
+                    </div>
+                </div>
+                {/* Dishes Cell */}
+                <div className="random-cell">
+                    <h2>Dishes I've Made Lately</h2>
+                    <p>Here are some dishes I’ve been cooking recently:</p>
+                    <div className="dish-images">
+                        ...under construction
+                        {/* Add more dish images as needed */}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+};
+
+//====================
 // Main App Component
+//====================
 const App = () => {
     const [activeTab, setActiveTab] = useState('about');
 
@@ -81,28 +165,25 @@ const App = () => {
                 <div className="nav-container">
                     <div className="logo">Evan Waite</div>
                     <div className="nav-tabs">
-                        <button
-                            className={`nav-tab ${activeTab === 'about' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('about')}
-                        >
-                            About Me
-                        </button>
-                        <button
-                            className={`nav-tab ${activeTab === 'project' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('project')}
-                        >
-                            Upcoming Project
-                        </button>
+                        <button className={`nav-tab ${activeTab === 'about' ? 'active' : ''}`} onClick={() => setActiveTab('about')}>About Me</button>
+                        <button className={`nav-tab ${activeTab === 'resume' ? 'active' : ''}`} onClick={() => setActiveTab('resume')}>Resume</button>
+                        <button className={`nav-tab ${activeTab === 'random' ? 'active' : ''}`} onClick={() => setActiveTab('random')}>Random</button>
+                        <button className={`nav-tab ${activeTab === 'project' ? 'active' : ''}`} onClick={() => setActiveTab('project')}>Upcoming Project</button>
                     </div>
                 </div>
             </nav>
             <main className="main-content">
-                {activeTab === 'about' ? <AboutMe /> : <UpcomingProject />}
+                {activeTab === 'about' && <AboutMe />}
+                {activeTab === 'resume' && <Resume />}
+                {activeTab === 'random' && <Random />}
+                {activeTab === 'project' && <UpcomingProject />}
             </main>
         </div>
     );
 };
 
+//====================
 // Render the app
+//====================
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
