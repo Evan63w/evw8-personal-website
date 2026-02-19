@@ -107,6 +107,44 @@ const Resume = () => {
 // Random Page Component
 //====================
 const Random = () => {
+    const tournaments = [
+        {
+            id: 1,
+            name: '2026 Grand Challenge IV',
+            date: 'Jan 8, 2026',
+            placement: '940/1385',
+            notes: 'This was rough, I used a choice specs flutter mane and didn\'t really know how to use any other win condition'
+        },
+        {
+            id: 2,
+            name: 'Tabletop Village VGC League Challenge',
+            date: 'Jan 24, 2026',
+            placement: '5/6',
+            notes: 'I went 1-2, and realized that I would need to learn how to play against double genie'
+        },
+        {
+            id: 3,
+            name: "VGC Winter League Cup @ Shane's",
+            date: 'Feb 14, 2026',
+            placement: '3/8',
+            notes: 'In my first League Cup, I went 2-1 and only lost to the winner. I still lost to double genie, but am gaining confidence'
+        },
+        {
+            id: 4,
+            name: "February VGC League Challenge @ Shane's",
+            date: 'Feb 14, 2026',
+            placement: '4/5',
+            notes: 'I was in a 4-way tie, losing to Qi again. I discovered that I always need to play with confidence'
+        },
+        {
+            id: 5,
+            name: "2026 Grand Challenge V",
+            date: 'Feb 22, 2026',
+            placement: 'Goal: top 500',
+            notes: 'I recently figured out how to use Ogerpon, and added speed to it and Rillaboom. I hope to have a better time this GC'
+        }
+    ];
+
     return (
         <div className="page-content">
             <div className="content-wrapper">
@@ -124,11 +162,27 @@ const Random = () => {
                     </ul>
                 </div>
 
-                {/* Pokémon Event Cell */}
-                {/* Pokémon Event Cell */}
+                {/* Pokémon Event Cell with Tournaments */}
                 <div className="random-cell">
                     <h2>2026 Pokémon VGC Seattle Regional Team</h2>
                     <p>I am looking forward to competing in this event!</p>
+                    <p>As a warmup, I have competed in these events:</p>
+
+                    <div className="tournament-list">
+                        {tournaments.map(t => (
+                            <div key={t.id} className="tournament-item">
+                                <div className="tournament-header">
+                                    <div className="tournament-title">{t.name} <span className="tournament-date">— {t.date}</span></div>
+                                </div>
+                                <div className="tournament-forms">
+                                    <div className="tournament-label">Placement: {t.placement}</div>
+
+                                    <div className="tournament-notes">{t.notes}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
                     <div className="pokemon-images">
                         <img src="727-0.png" alt="Pokemon 1" className="img-pokemon" />
                         <img src="812-0.png" alt="Pokemon 2" className="img-pokemon" />

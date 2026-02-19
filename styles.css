@@ -376,3 +376,87 @@ img.img-dish {
     width: 40px;
     height: 40px;
 }
+
+/* Tournament list styles */
+.tournament-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.tournament-item {
+    background: #262626;
+    border: 1px solid #333333;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.tournament-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.tournament-title {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.tournament-date {
+    color: #b3b3b3;
+    font-weight: 600;
+    margin-left: 0.4rem;
+}
+
+.tournament-forms {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.tournament-label {
+    display: block;
+    color: #d1d1d1;
+    font-size: 0.95rem;
+}
+
+.tournament-input {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    margin-top: 0.35rem;
+    border-radius: 6px;
+    border: 1px solid #3a3a3a;
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.tournament-textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 0.5rem 0.6rem;
+    margin-top: 0.35rem;
+    border-radius: 6px;
+    border: 1px solid #3a3a3a;
+    background: #1a1a1a;
+    color: #ffffff;
+    resize: vertical;
+}
+
+/* Placeholder (non-editable) styling for placement/notes */
+.tournament-placeholder {
+    width: 100%;
+    min-height: 34px;
+    margin-top: 0.35rem;
+    border-radius: 6px;
+    border: 1px dashed #3a3a3a;
+    background: #151515;
+}
+
+.tournament-placement {
+    max-width: 220px;
+    height: 36px;
+}
+
+.tournament-notes {
+    min-height: 56px;
+}
