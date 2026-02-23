@@ -142,6 +142,20 @@ const Random = () => {
             date: 'Feb 22, 2026',
             placement: 'Goal: top 500',
             notes: 'I recently figured out how to use Ogerpon, and added speed to it and Rillaboom. I hope to have a better time this GC'
+        },
+        {
+            id: 6,
+            name: "Tabletop Village VGC February League Challenge",
+            date: 'Feb 21, 2026',
+            placement: '3/4',
+            notes: 'Today, I learned the hard way that I need to play attention. I would\ve gotten 2nd if I had not used high horsepower on a Tera Fairy Raging Bolt'
+        },
+        {
+            id: 7,
+            name: "Tabletop Village VGC Q1 - League Cup",
+            date: 'Feb 21, 2026',
+            placement: '3/14',
+            notes: 'Today, I played someone who went 7-1 in a regional first round, with trick room Torkoal + Indeedee. Then, I played an assault vest Raging Bolt Balance and finally an Ursaluna plus Dondozo team'
         }
     ];
 
