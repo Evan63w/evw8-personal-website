@@ -39,6 +39,60 @@
     const head=split(lines[0]).map(s=>s.toLowerCase().replace(/[^a-z0-9]/g,'')),known=['name','event','tournamentname','location','date','datetime','standing','placement','product','tournamentid'],has=head.some(x=>known.includes(x)),data=has?lines.slice(1):lines;
     const get=(c,keys,f)=>{if(!has)return c[f]||'';for(const k of keys){const i=head.indexOf(k);if(i>=0&&c[i])return c[i]}return ''};
     let n=0;data.forEach(line=>{const c=split(line),e=normalize({name:get(c,['name','event','tournamentname','tournament'],1),location:get(c,['location','city'],2),product:get(c,['product','format','game'],4),date:get(c,['date','datetime','eventdate'],3),standing:get(c,['standing','placement','result','rank'],5),id:get(c,['tournamentid','id'],0)});if(e.name){events.push(e);n++}});return n}
+  async function syncPokemonSeasons(){
+    const button=$('sync'),status=$('status');
+    button.disabled=true;button.textContent='Syncing…';
+    status.textContent='Loading the 2026 and 2027 Pokémon tournament tables…';
+    const seasons=[
+      {cycle:109,url:'https://op-legacy.pokemon.com/us/pokemon-trainer-club/play-pokemon/events/?cycle=109'},
+      {cycle:110,url:'https://op-legacy.pokemon.com/us/pokemon-trainer-club/play-pokemon/events/?cycle=110'}
+    ];
+    try{
+      const imported=[];
+      for(const season of seasons){
+        const response=await fetch(season.url,{credentials:'include',cache:'no-store'});
+        if(!response.ok)throw Error('Season '+season.cycle+' returned HTTP '+response.status);
+        const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+        const table=[...doc.querySelectorAll('table')].find(t=>[...t.querySelectorAll('th')].some(th=>/tournament\\s*id/i.test(th.textContent)));
+        if(!table)throw Error('Could not find the Tournament ID table for cycle '+season.cycle+'. The page may require a logged-in session or block cross-origin requests.');
+        const headerRow=[...table.querySelectorAll('tr')].find(tr=>tr.querySelectorAll('th').length);
+        const headers=[...(headerRow?.querySelectorAll('th')||[])].map(th=>th.textContent.trim().toLowerCase());
+        const findCol=patterns=>headers.findIndex(h=>patterns.some(p=>p.test(h)));
+        const cols={
+          id:findCol([/tournament\\s*id/]),
+          name:findCol([/tournament\\s*name/,/^name$/,/event name/]),
+          location:findCol([/location/,/city/]),
+          product:findCol([/product/,/format/,/game/]),
+          date:findCol([/date\\s*\\/\\s*time/,/^date$/,/start date/]),
+          standing:findCol([/standing/,/placement/,/^rank$/,/result/])
+        };
+        if(cols.id<0||cols.name<0)throw Error('Unrecognized columns in cycle '+season.cycle+' table.');
+        [...table.querySelectorAll('tr')].filter(tr=>tr.querySelectorAll('td').length).forEach(tr=>{
+          const cells=[...tr.querySelectorAll('td')].map(td=>td.textContent.trim());
+          const val=k=>cols[k]>=0?(cells[cols[k]]||''):'';
+          const sourceId=val('id'),name=val('name');
+          if(!sourceId||!name)return;
+          imported.push({id:'ptc-'+sourceId.replace(/[^a-z0-9_-]/gi,'-'),sourceId,name,date:date(val('date')),location:val('location'),product:val('product')||'VGC',standing:val('standing'),teamUrl:'',notes:'',season:season.cycle});
+        });
+      }
+      if(!imported.length)throw Error('No event rows were found in the two season tables.');
+      const priorBySource=new Map(events.filter(e=>e.sourceId).map(e=>[String(e.sourceId),e]));
+      const priorById=new Map(events.map(e=>[e.id,e]));
+      let added=0,updated=0;
+      imported.forEach(remote=>{
+        const prior=priorBySource.get(String(remote.sourceId))||priorById.get(remote.id);
+        if(prior){
+          Object.assign(prior,remote,{notes:prior.notes||'',teamUrl:prior.teamUrl||''});
+          updated++;
+        }else{events.push(remote);added++}
+      });
+      save();render();
+      status.textContent='Synced '+imported.length+' rows from 2026 and 2027 ('+added+' added, '+updated+' matched). Notes and team links were preserved.';
+    }catch(err){
+      status.textContent='Sync failed: '+err.message+' No existing events were removed. If this is a CORS/login restriction, the reliable fallback is to export/copy the tables from the logged-in Pokémon page and import them below.';
+    }finally{button.disabled=false;button.textContent='↻ Sync Pokémon 2026–2027'}
+  }
+  $('sync').onclick=syncPokemonSeasons;
   $('add').onclick=()=>form(null);$('cancel').onclick=()=>{$('editor').hidden=true};
   $('event-form').onsubmit=e=>{e.preventDefault();const id=$('id').value||'event-'+Date.now();const v=normalize({id,name:$('name').value,date:$('date').value,location:$('location').value,product:$('product').value,standing:$('standing').value,teamUrl:$('teamUrl').value,notes:$('notes').value});const i=events.findIndex(x=>x.id===id);if(i>=0)events[i]=v;else events.push(v);save();$('editor').hidden=true;render()};
   $('search').oninput=render;$('year').onchange=render;
