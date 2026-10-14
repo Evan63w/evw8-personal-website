@@ -2,11 +2,18 @@
   const KEY = 'evw8-vgc-tournament-history-v1';
   const seed = [
     {id:'mox-bellevue-2026-10-11',name:'MOX Bellevue Oct VG Challenge',date:'2026-10-11',location:'Bellevue, WA',product:'VGC',standing:'3 of 22',teamUrl:'',notes:''},
-    {id:'marymoor-2026-10-13',name:'Marymoor October VG Challenge',date:'2026-10-13',location:'',product:'VGC',standing:'3 of 12',teamUrl:'',notes:''}
+    {id:'marymoor-2026-10-13',name:'Marymoor October VG Challenge',date:'2026-10-13',location:'',product:'VGC',standing:'3 of 12',teamUrl:'',notes:''},
+    {id:'random-2026-grand-challenge-iv',name:'2026 Grand Challenge IV',date:'2026-01-08',location:'Online',product:'VGC',standing:'940 of 1385',teamUrl:'',notes:"This was rough; I used a Choice Specs Flutter Mane and didn't really know how to use any other win condition."},
+    {id:'random-tabletop-village-jan-24',name:'Tabletop Village VGC League Challenge',date:'2026-01-24',location:'',product:'VGC',standing:'5 of 6',teamUrl:'',notes:'I went 1–2 and realized I needed to learn how to play against double genie.'},
+    {id:'random-winter-league-cup-feb-14',name:"VGC Winter League Cup @ Shane's",date:'2026-02-14',location:'',product:'VGC League Cup',standing:'3 of 8',teamUrl:'',notes:'In my first League Cup, I went 2–1 and only lost to the winner. I still lost to double genie, but was gaining confidence.'},
+    {id:'random-feb-league-challenge-feb-14',name:"February VGC League Challenge @ Shane's",date:'2026-02-14',location:'',product:'VGC League Challenge',standing:'4 of 5',teamUrl:'',notes:'I was in a 4-way tie, losing to Qi again. I realized I need to play with confidence.'},
+    {id:'random-tabletop-village-feb-21',name:'Tabletop Village VGC February League Challenge',date:'2026-02-21',location:'',product:'VGC League Challenge',standing:'3 of 4',teamUrl:'',notes:'I learned the hard way that I need to pay attention. I would have gotten 2nd if I had not used High Horsepower on a Tera Fairy Raging Bolt.'},
+    {id:'random-tabletop-village-q1-cup-feb-21',name:'Tabletop Village VGC Q1 - League Cup',date:'2026-02-21',location:'',product:'VGC League Cup',standing:'3 of 14',teamUrl:'',notes:'I played a player who went 7–1 in a regional first round with Trick Room Torkoal + Indeedee, then Assault Vest Raging Bolt balance, and finally Ursaluna plus Dondozo.'},
+    {id:'random-grand-challenge-v-feb-22',name:'2026 Grand Challenge V',date:'2026-02-22',location:'Online',product:'VGC',standing:'Goal: top 500',teamUrl:'',notes:'I had recently figured out how to use Ogerpon and added Speed to it and Rillaboom. Goal was a better result this Grand Challenge.'}
   ];
   const $ = id => document.getElementById(id);
   let events = read();
-  function read(){try{const x=localStorage.getItem(KEY);return x?JSON.parse(x):seed.slice()}catch(_){return seed.slice()}}
+  function read(){try{const x=localStorage.getItem(KEY);if(!x)return seed.slice();const saved=JSON.parse(x);if(!Array.isArray(saved))return seed.slice();const ids=new Set(saved.map(e=>e.id));return saved.concat(seed.filter(e=>!ids.has(e.id)))}catch(_){return seed.slice()}}
   function save(){localStorage.setItem(KEY,JSON.stringify(events))}
   function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function rank(s){const m=String(s||'').match(/(\d+)\s*(?:\/|of)\s*\d+/i);return m?+m[1]:null}
