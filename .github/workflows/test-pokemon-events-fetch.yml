@@ -1,0 +1,99 @@
+name: Temporary Pokémon events fetch test
+
+on:
+  push:
+    branches:
+      - test-pokemon-events-fetch
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test both season pages without account credentials
+        run: |
+          python - <<'PY'
+          import urllib.request
+          from html.parser import HTMLParser
+          from urllib.parse import urlparse
+
+          URLS = {
+              109: "https://op-legacy.pokemon.com/us/pokemon-trainer-club/play-pokemon/events/?cycle=109",
+              110: "https://op-legacy.pokemon.com/us/pokemon-trainer-club/play-pokemon/events/?cycle=110",
+          }
+
+          class Parser(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.title = False
+                  self.title_text = []
+                  self.tables = 0
+                  self.table_depth = 0
+                  self.row_depth = 0
+                  self.rows = 0
+                  self.header_depth = 0
+                  self.headers = []
+                  self.current_header = []
+                  self.current_row = False
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if tag == "title":
+                      self.title = True
+                  if tag == "table":
+                      self.tables += 1
+                      self.table_depth += 1
+                  if tag == "tr" and self.table_depth:
+                      self.row_depth += 1
+                      self.current_row = True
+                  if tag == "th" and self.table_depth and self.current_row:
+                      self.header_depth += 1
+                      self.current_header = []
+              def handle_endtag(self, tag):
+                  if tag == "title":
+                      self.title = False
+                  if tag == "th" and self.header_depth:
+                      self.header_depth -= 1
+                      label = " ".join("".join(self.current_header).split())
+                      if label:
+                          self.headers.append(label)
+                  if tag == "tr" and self.row_depth:
+                      if self.current_row:
+                          self.rows += 1
+                      self.row_depth -= 1
+                      self.current_row = False
+                  if tag == "table" and self.table_depth:
+                      self.table_depth -= 1
+              def handle_data(self, data):
+                  if self.title: self.title_text.append(data)
+                  if self.header_depth: self.current_header.append(data)
+
+          for cycle, url in URLS.items():
+              print(f"--- cycle={cycle} ---")
+              req = urllib.request.Request(url, headers={
+                  "User-Agent": "Mozilla/5.0 (compatible; TournamentHistorySyncTest/1.0)",
+                  "Origin": "https://evan63w.github.io",
+                  "Accept": "text/html,application/xhtml+xml"
+              })
+              try:
+                  with urllib.request.urlopen(req, timeout=25) as response:
+                      body = response.read()
+                      parser = Parser()
+                      parser.feed(body.decode("utf-8", errors="replace"))
+                      print("status:", response.status)
+                      print("final_host:", urlparse(response.geturl()).netloc)
+                      print("final_path:", urlparse(response.geturl()).path)
+                      print("bytes:", len(body))
+                      print("title:", " ".join("".join(parser.title_text).split())[:120])
+                      print("table_count:", parser.tables)
+                      print("row_count:", parser.rows)
+                      print("has_tournament_id_header:", any("tournament id" in h.lower() for h in parser.headers))
+                      print("header_labels:", " | ".join(parser.headers[:25]))
+                      print("cors_allow_origin:", response.headers.get("Access-Control-Allow-Origin", "<absent>"))
+                      print("cors_allow_credentials:", response.headers.get("Access-Control-Allow-Credentials", "<absent>"))
+                      print("set_cookie_present:", bool(response.headers.get("Set-Cookie")))
+              except Exception as exc:
+                  print("request_error:", type(exc).__name__, str(exc)[:240])
+          PY
