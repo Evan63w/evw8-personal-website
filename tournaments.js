@@ -53,17 +53,17 @@
         const response=await fetch(season.url,{credentials:'include',cache:'no-store'});
         if(!response.ok)throw Error('Season '+season.cycle+' returned HTTP '+response.status);
         const doc=new DOMParser().parseFromString(await response.text(),'text/html');
-        const table=[...doc.querySelectorAll('table')].find(t=>[...t.querySelectorAll('th')].some(th=>/tournament\\s*id/i.test(th.textContent)));
+        const table=[...doc.querySelectorAll('table')].find(t=>[...t.querySelectorAll('th')].some(th=>/tournament\s*id/i.test(th.textContent)));
         if(!table)throw Error('Could not find the Tournament ID table for cycle '+season.cycle+'. The page may require a logged-in session or block cross-origin requests.');
         const headerRow=[...table.querySelectorAll('tr')].find(tr=>tr.querySelectorAll('th').length);
         const headers=[...(headerRow?.querySelectorAll('th')||[])].map(th=>th.textContent.trim().toLowerCase());
         const findCol=patterns=>headers.findIndex(h=>patterns.some(p=>p.test(h)));
         const cols={
-          id:findCol([/tournament\\s*id/]),
-          name:findCol([/tournament\\s*name/,/^name$/,/event name/]),
+          id:findCol([/tournament\s*id/]),
+          name:findCol([/tournament\s*name/,/^name$/,/event name/]),
           location:findCol([/location/,/city/]),
           product:findCol([/product/,/format/,/game/]),
-          date:findCol([/date\\s*\\/\\s*time/,/^date$/,/start date/]),
+          date:findCol([/date\s*\/\s*time/,/^date$/,/start date/]),
           standing:findCol([/standing/,/placement/,/^rank$/,/result/])
         };
         if(cols.id<0||cols.name<0)throw Error('Unrecognized columns in cycle '+season.cycle+' table.');
